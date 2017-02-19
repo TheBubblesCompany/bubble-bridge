@@ -1,0 +1,71 @@
+{
+  "name": "bubble-bridge",
+  "version": "1.2.0",
+  "description": "Bridge that enables interactions with the Bubbles",
+  "keywords": [
+    "bubbles company",
+    "bubble",
+    "bridge"
+  ],
+  "homepage": "https://github.com/hotolab/bubble-bridge",
+  "bugs": {
+    "url": "https://github.com/hotolab/bubble-bridge/issues"
+  },
+  "license": "GPL-3.0",
+  "author": {
+    "name": "Jonathan Gautheron",
+    "url": "https://github.com/jgautheron",
+    "twitter": "jgautheron"
+  },
+  "files": [
+    "/dist"
+  ],
+  "main": "/dist/index.js",
+  "repository": "hotolab/bubble-bridge",
+  "scripts": {
+    "build": "gulp build",
+    "coverage": "babel-node ./node_modules/.bin/isparta cover _mocha",
+    "lint": "eslint src",
+    "lint:test": "eslint test",
+    "test": "npm run lint && npm run test:unit && npm run test:integration",
+    "test:integration": "npm run lint && mocha './test/integration/**/*.spec.js' --compilers js:babel-core/register --require './test/mocha.conf.js'",
+    "test:unit": "mocha './test/unit/**/*.spec.js' --compilers js:babel-core/register --require './test/mocha.conf.js'"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "**/node_modules/**"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-eslint": "7.1.1",
+    "babel-plugin-transform-class-properties": "6.22.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.22.0",
+    "babel-plugin-transform-object-rest-spread": "6.22.0",
+    "babel-plugin-transform-runtime": "6.22.0",
+    "babel-plugin-istanbul": "^4.0.0",
+    "babel-preset-latest": "^6.22.0",
+    "babel-runtime": "6.23.0",
+    "chai": "^3.5.0",
+    "del": "^2.2.2",
+    "eslint": "^3.15.0",
+    "eslint-plugin-mocha": "^4.0.0",
+    "eslint-config-next": "^0.1.15",
+    "eslint-plugin-import": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-format-md": "*",
+    "gulp-sourcemaps": "^2.4.1",
+    "mocha": "*",
+    "nyc": "^10.1.2"
+  },
+  "engines": {
+    "node": ">=7.0.0"
+  },
+  "nyc": {
+    "sourceMap": false,
+    "instrument": false
+  }
+}
