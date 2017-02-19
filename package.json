@@ -1,15 +1,15 @@
 {
   "name": "bubble-bridge",
-  "version": "1.3.0",
+  "version": "1.2.0",
   "description": "Bridge that enables interactions with the Bubbles",
   "keywords": [
     "bubbles company",
     "bubble",
     "bridge"
   ],
-  "homepage": "https://github.com/hotolab/bubble-bridge",
+  "homepage": "https://github.com/jgautheron/bubble-bridge",
   "bugs": {
-    "url": "https://github.com/hotolab/bubble-bridge/issues"
+    "url": "https://github.com/jgautheron/bubble-bridge/issues"
   },
   "license": "GPL-3.0",
   "author": {
@@ -21,7 +21,7 @@
     "/dist"
   ],
   "main": "/dist/index.js",
-  "repository": "hotolab/bubble-bridge",
+  "repository": "jgautheron/bubble-bridge",
   "scripts": {
     "build": "gulp build",
     "coverage": "babel-node ./node_modules/.bin/isparta cover _mocha",
