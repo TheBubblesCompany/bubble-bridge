@@ -10,8 +10,8 @@ export default class Base extends EventEmitter {
     this.isApplicationReady = false
     this.environment = 'Web'
     this.bridge = {
-      callHandler(method, data, callback) {},
-      registerHandler(event, callback) {},
+      callHandler(method, data, callback) {}, // eslint-disable-line
+      registerHandler(event, callback) {}, // eslint-disable-line
     }
   }
 
@@ -181,7 +181,7 @@ export default class Base extends EventEmitter {
   openURI(uri, callback) {
     this.log('START openURI')
     this.log(`uri ${uri}`)
-    window.location = uri
+    global.location = uri
     if (callback) {
       callback(true)
     }

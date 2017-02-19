@@ -1,3 +1,5 @@
+/* global document */
+
 import Base from './base'
 import * as event from './events'
 
