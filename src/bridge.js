@@ -5,7 +5,7 @@ import * as event from './events'
 
 export default class Bridge extends Base {
   start() {
-    this.on(event.EventOnApplicationReady, () => {
+    document.addEventListener(event.EventOnApplicationReady, () => {
       console.log('bubblesBridge.eventOnApplicationReady fired')
       if (this.isBridgeReady && this.isApplicationReady) {
         this.fireBeforeOnReady()
@@ -15,7 +15,7 @@ export default class Bridge extends Base {
       }
     })
 
-    this.on(event.EventOnBridgeReady, () => {
+    document.addEventListener(event.EventOnBridgeReady, () => {
       console.log('bubblesBridge.eventOnBridgeReady fired')
       if (this.isBridgeReady && this.isApplicationReady) {
         this.fireBeforeOnReady()
@@ -29,7 +29,7 @@ export default class Bridge extends Base {
       this.environment = this.environmentWeb
       this.ready()
     }, 1000)
-    global.addEventListener('WebViewJavascriptBridgeReady', (ev) => {
+    document.addEventListener('WebViewJavascriptBridgeReady', (ev) => {
       this.environment = this.environmentAndroid
       this.bridge = ev.bridge
       this.setupHandlers()
@@ -47,24 +47,25 @@ export default class Bridge extends Base {
   init(fireEventOnReady = true) {
     this.fireEventOnReady = fireEventOnReady
     this.isApplicationReady = true
-    this.emit(event.EventOnApplicationReady)
+    const bubblesApplicationReady = new Event(event.EventOnApplicationReady)
+    document.dispatchEvent(bubblesApplicationReady)
   }
 
   setupWebViewJavascriptBridge(callback) {
-    if (global.WebViewJavascriptBridge) {
-      return callback(global.WebViewJavascriptBridge)
+    if (window.WebViewJavascriptBridge) {
+        return callback(WebViewJavascriptBridge);
     }
-    if (global.WVJBCallbacks) {
-      return global.WVJBCallbacks.push(callback)
+    if (window.WVJBCallbacks) {
+        return window.WVJBCallbacks.push(callback);
     }
-    global.WVJBCallbacks = [callback]
-    const WVJBIframe = document.createElement('iframe')
-    WVJBIframe.style.display = 'none'
-    WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__'
-    document.documentElement.appendChild(WVJBIframe)
-    setTimeout(() => {
-      document.documentElement.removeChild(WVJBIframe)
-    }, 0)
+    window.WVJBCallbacks = [callback];
+    var WVJBIframe = document.createElement('iframe');
+    WVJBIframe.style.display = 'none';
+    WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+    document.documentElement.appendChild(WVJBIframe);
+    setTimeout(function() {
+        document.documentElement.removeChild(WVJBIframe)
+    }, 0);
   }
 
   setupHandlers() {
@@ -75,12 +76,14 @@ export default class Bridge extends Base {
     this.ready = function() {
       console.log('Bridge is ready!')
       this.isBridgeReady = true
-      this.emit(event.EventOnBridgeReady)
+      const bridgeReadyEvent = new Event(event.EventOnBridgeReady)
+      document.dispatchEvent(bridgeReadyEvent)
     }
 
     this.fireReadyEvent = function() {
       this.callHandler('ready')
-      this.emit(event.EventOnReady)
+      const bridgeReadyEvent = new Event(event.EventOnReady)
+      document.dispatchEvent(bridgeReadyEvent)
     }
 
     this.getBubbles = function(callback) {

@@ -1,13 +1,16 @@
-import { EventEmitter } from 'events'
+// import { EventEmitter } from 'events'
 import * as event from './events'
 
-export default class Base extends EventEmitter {
+export default class Base {
   constructor() {
-    super()
-
+    this.version = '1.2.0'
     this.fireEventOnReady = true
     this.isBridgeReady = false
     this.isApplicationReady = false
+
+    this.environmentIOS = 'iOS'
+    this.environmentAndroid = 'Android'
+    this.environmentWeb = 'Web'
     this.environment = 'Web'
     this.bridge = {
       callHandler(method, data, callback) {}, // eslint-disable-line
@@ -23,7 +26,8 @@ export default class Base extends EventEmitter {
    * Fires application ready event
    */
   fireReadyEvent() {
-    this.emit(event.EventOnReady)
+    const bridgeReadyEvent = new Event(event.EventOnReady)
+    document.dispatchEvent(bridgeReadyEvent)
   }
 
   /**
@@ -32,7 +36,8 @@ export default class Base extends EventEmitter {
    * Internal only
    */
   fireBeforeOnReady() {
-    this.emit(event.EventBeforeOnReady)
+    const bridgeReadyEvent = new Event(event.EventBeforeOnReady)
+    document.dispatchEvent(bridgeReadyEvent)
   }
 
   /**
@@ -43,7 +48,8 @@ export default class Base extends EventEmitter {
   ready() {
     console.log('Debug on Web!')
     this.isBridgeReady = true
-    this.emit(event.EventOnBridgeReady)
+    const bridgeReadyEvent = new Event(event.EventOnBridgeReady)
+    document.dispatchEvent(bridgeReadyEvent)
   }
 
   /**
@@ -181,7 +187,7 @@ export default class Base extends EventEmitter {
   openURI(uri, callback) {
     this.log('START openURI')
     this.log(`uri ${uri}`)
-    global.location = uri
+    window.location = uri
     if (callback) {
       callback(true)
     }
