@@ -18,7 +18,8 @@
     "twitter": "jgautheron"
   },
   "files": [
-    "/dist"
+    "/dist",
+    "index.js"
   ],
   "main": "/dist/index.js",
   "repository": "jgautheron/bubble-bridge",
