@@ -456,7 +456,8 @@ var bubblesBridge = {
         bubblesSystemBridge.registerHandler("onBluetoothStateChange", function(data, responseCallback) {
             bubblesBridge.log("onBluetoothStateChange");
             var parsedData = JSON.parse(data);
-            var response = bubblesBridge.onBluetoothStateChange(parsedData.isActivated);
+            const isActivated = parsedData.isActivated === 'true';
+            var response = bubblesBridge.onBluetoothStateChange(isActivated);
             if (responseCallback) {
                 responseCallback(response);
             }
@@ -465,7 +466,8 @@ var bubblesBridge = {
         bubblesSystemBridge.registerHandler("onLocationStateChange", function(data, responseCallback) {
             bubblesBridge.log("onLocationStateChange");
             var parsedData = JSON.parse(data);
-            var response = bubblesBridge.onLocationStateChange(parsedData.isActivated);
+            const isActivated = parsedData.isActivated === 'true';
+            var response = bubblesBridge.onLocationStateChange(isActivated);
             if (responseCallback) {
                 responseCallback(response);
             }
