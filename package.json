@@ -7,14 +7,14 @@
     "bubble",
     "bridge"
   ],
-  "homepage": "https://github.com/jgautheron/bubble-bridge",
+  "homepage": "https://github.com/TheBubblesCompany/bubble-bridge",
   "bugs": {
-    "url": "https://github.com/jgautheron/bubble-bridge/issues"
+    "url": "https://github.com/TheBubblesCompany/bubble-bridge/issues"
   },
   "license": "GPL-3.0",
   "author": {
     "name": "Jonathan Gautheron",
-    "url": "https://github.com/jgautheron",
+    "url": "https://github.com/TheBubblesCompany",
     "twitter": "jgautheron"
   },
   "files": [
@@ -22,7 +22,7 @@
     "index.js"
   ],
   "main": "/dist/index.js",
-  "repository": "jgautheron/bubble-bridge",
+  "repository": "TheBubblesCompany/bubble-bridge",
   "scripts": {
     "build": "gulp build",
     "coverage": "babel-node ./node_modules/.bin/isparta cover _mocha",
