@@ -60,6 +60,16 @@ export default class Base {
   }
 
   /**
+  * Callback fires from application when metadata changes
+  *
+  * @param metadata
+  */
+  onMetadataChange(metadata) {
+    this.log('Metadata change from application')
+    this.log(metadata)
+  }
+
+  /**
    * Callback fires from application when user leaves service
    */
   onPauseEvent() {

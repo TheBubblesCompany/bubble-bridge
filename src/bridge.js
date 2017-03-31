@@ -183,6 +183,14 @@ export default class Bridge extends Base {
       }
     })
 
+    this.bridge.registerHandler('onMetadataChange', (data, responseCallback) => {
+      this.log('onMetadataChange')
+      const response = this.onMetadataChange()
+      if (responseCallback) {
+        responseCallback(response)
+      }
+    })
+
     this.bridge.registerHandler('onPause', (data, responseCallback) => {
       this.log('Back from application')
       const response = this.onPauseEvent()

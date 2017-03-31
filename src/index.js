@@ -1,39 +1,28 @@
-// import _Bridge from './bridge'
-
-// const SingletonBridge = {
-//   bridge: null,
-//   readyCallbacks: [],
-//   ready(cb) {
-//     if (this.bridge) return cb()
-//     if (typeof window !== 'undefined') {
-//       this.readyCallbacks.push(cb)
-//     }
-//   },
-// }
-
-// const bridgeEvents = ['bubblesApplicationReady', 'bubblesSystemBridgeReady', 'bubblesBridgeReady', 'beforeBubblesBridgeReady']
-
-// bridgeEvents.forEach((event) => {
-//   SingletonBridge.ready(() => {
-//     SingletonBridge.bridge.on(event, (...args) => {
-//       const eventField = `on${event.charAt(0).toUpperCase()}${event.substring(1)}`
-//       if (SingletonBridge[eventField]) {
-//         SingletonBridge[eventField](...args)
-//       }
-//     })
-//   })
-// })
-
-// export default SingletonBridge
-
-// export const createBridge = () => {
-//   SingletonBridge.bridge = new _Bridge()
-//   SingletonBridge.readyCallbacks.forEach(cb => cb())
-//   SingletonBridge.readyCallbacks = []
-//   return SingletonBridge.bridge
-// }
-
-// export const Bridge = _Bridge
+/**
+ *
+ * Bridge to handle system interaction regarding our SDK
+ *
+ * Current version allow:
+ *  - log
+ *  - getEnvironment
+ *  - getVersion
+ *  - fireReadyEvent
+ *  - onBackEvent
+ *  - onPauseEvent
+ *  - onResumeEvent
+ *  - onBluetoothStateChange
+ *  - onLocationStateChange
+ *  - onBubbleChangeEvent
+ *  - getBubbles
+ *  - getBeaconsAround
+ *  - onBeaconChangeEvent
+ *  - chooseBubble
+ *  - writeIfNotification
+ *  - openURI
+ *
+ * @copyright The Bubbles Company
+ * @version 1.2.0
+ */
 
 var bubblesSystemBridge = {
     callHandler: function(method, data, callback) {},
@@ -44,7 +33,7 @@ var bubblesBridge = {
     /**
      * Constant
      */
-    version: '1.1.1.0',
+    version: '1.2.0',
 
     /**
      * Events
@@ -112,6 +101,7 @@ var bubblesBridge = {
     isBridgeReady: false,
     isApplicationReady: false,
     environment: 'Web',
+    URLParameters: null,
 
     /**
      * Methods
@@ -157,6 +147,16 @@ var bubblesBridge = {
     },
 
     /**
+     * Callback fires from application when metadata changes
+     *
+     * @param metadata
+     */
+    onMetadataChange: function(metadata) {
+        bubblesBridge.log("Metadata change from application");
+        bubblesBridge.log(metadata);
+    },
+
+    /**
      * Callback fires from Android when user clicks on hardware back button
      */
     onBackEvent: function() {
@@ -189,7 +189,7 @@ var bubblesBridge = {
 
     /**
      * Callback fires from application when bluetooth state changes
-     * 
+     *
      * @param state
      */
     onBluetoothStateChange: function(state) {
@@ -199,7 +199,7 @@ var bubblesBridge = {
 
     /**
      * Callback fires from application when location state changes
-     * 
+     *
      * @param state
      */
     onLocationStateChange: function(state) {
@@ -298,6 +298,24 @@ var bubblesBridge = {
     },
 
     /**
+     * Gets metadata
+     *
+     * @returns {string}
+     */
+    getMetadata: function() {
+        return bubblesBridge.getParameters().bubbles_meta;
+    },
+
+    /**
+     * Gets default metadata
+     *
+     * @returns {string}
+     */
+    getDefaultMetadata: function() {
+        return bubblesBridge.getParameters().bubbles_default_meta;
+    },
+
+    /**
      * Gets current environment
      *
      * @returns {string} iOS, Android or Web
@@ -313,6 +331,29 @@ var bubblesBridge = {
      */
     getVersion: function() {
         return bubblesBridge.version;
+    },
+
+    /**
+     * Gets URL GET Parameters
+     *
+     * @returns {Object}
+     */
+    getParameters: function() {
+        if (!bubblesBridge.URLParameters) {
+            bubblesBridge.URLParameters = { bubbles_meta: '', bubbles_default_meta: '' };
+
+            window.location.search
+                .substr(1)
+                .split("&")
+                .forEach(function(item) {
+                    var parameter = item.split("=");
+                    if (parameter.length === 2) {
+                        bubblesBridge.URLParameters[parameter[0]] = decodeURIComponent(parameter[1]);
+                    }
+                });
+        }
+
+        return bubblesBridge.URLParameters;
     },
 
     /**
@@ -407,12 +448,12 @@ var bubblesBridge = {
             bubblesSystemBridge.callHandler("writeIfNotification", JSON.stringify(data), bubblesBridge.writeIfNotificationCallback);
             bubblesBridge.log("END writeIfNotification");
         };
-		
+
         bubblesBridge.closeService = function() {
             bubblesBridge.log("Close Service");
             bubblesSystemBridge.callHandler("closeService");
         };
-		
+
         bubblesBridge.openURI = function(uri, callback) {
             bubblesBridge.log("START openURI");
             bubblesBridge.log("uri " + uri);
@@ -429,6 +470,14 @@ var bubblesBridge = {
             bubblesBridge.log("END openURI");
         };
 
+        bubblesSystemBridge.registerHandler("onMetadataChange", function(data, responseCallback) {
+            bubblesBridge.log("onMetadataChange");
+            var response = bubblesBridge.onMetadataChange(data);
+            if (responseCallback) {
+                responseCallback(response);
+            }
+        });
+
         bubblesSystemBridge.registerHandler("onBackPressed", function(data, responseCallback) {
             bubblesBridge.log("Back from application");
             var response = bubblesBridge.onBackEvent();
@@ -438,7 +487,7 @@ var bubblesBridge = {
         });
 
         bubblesSystemBridge.registerHandler("onPause", function(data, responseCallback) {
-            bubblesBridge.log("Back from application");
+            bubblesBridge.log("Pause from application");
             var response = bubblesBridge.onPauseEvent();
             if (responseCallback) {
                 responseCallback(response);
@@ -446,7 +495,7 @@ var bubblesBridge = {
         });
 
         bubblesSystemBridge.registerHandler("onResume", function(data, responseCallback) {
-            bubblesBridge.log("Back from application");
+            bubblesBridge.log("Resume from application");
             var response = bubblesBridge.onResumeEvent();
             if (responseCallback) {
                 responseCallback(response);
@@ -456,8 +505,7 @@ var bubblesBridge = {
         bubblesSystemBridge.registerHandler("onBluetoothStateChange", function(data, responseCallback) {
             bubblesBridge.log("onBluetoothStateChange");
             var parsedData = JSON.parse(data);
-            const isActivated = parsedData.isActivated === 'true';
-            var response = bubblesBridge.onBluetoothStateChange(isActivated);
+            var response = bubblesBridge.onBluetoothStateChange(parsedData.isActivated);
             if (responseCallback) {
                 responseCallback(response);
             }
@@ -466,8 +514,7 @@ var bubblesBridge = {
         bubblesSystemBridge.registerHandler("onLocationStateChange", function(data, responseCallback) {
             bubblesBridge.log("onLocationStateChange");
             var parsedData = JSON.parse(data);
-            const isActivated = parsedData.isActivated === 'true';
-            var response = bubblesBridge.onLocationStateChange(isActivated);
+            var response = bubblesBridge.onLocationStateChange(parsedData.isActivated);
             if (responseCallback) {
                 responseCallback(response);
             }
@@ -494,7 +541,7 @@ var bubblesBridge = {
             }
         });
 
-        bubblesBridge.version = '1.0.0.0';
+        bubblesBridge.version = '1.2.0';
         var timeoutVersion = setTimeout(function() {
             bubblesBridge.ready();
         }, 200);
@@ -505,7 +552,7 @@ var bubblesBridge = {
                 bubblesBridge.version = parsedData.version;
             }
             else {
-                bubblesBridge.version = '1.0.0.0';
+                bubblesBridge.version = '1.2.0';
             }
             bubblesBridge.ready();
         });
